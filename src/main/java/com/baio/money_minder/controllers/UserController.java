@@ -1,9 +1,12 @@
 package com.baio.money_minder.controllers;
 
+import com.baio.money_minder.dtos.UserDto;
 import com.baio.money_minder.entities.User;
 import com.baio.money_minder.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,13 +25,22 @@ public class UserController {
     }
 
     @GetMapping
-    public Iterable<User> getAllUsers() {
-        return userRepository.findAll();
+    public Iterable<UserDto> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(user -> new UserDto(user.getEmail(), user.getUsername()))
+                .toList();
     }
 
     @GetMapping("/{email}")
-    public User getUser(@PathVariable String email) {
-        return this.userRepository.findById(email).orElse(null);
+    public ResponseEntity<UserDto> getUser(@PathVariable String email) {
+        var user = this.userRepository.findById(email).orElse(null);
+        if(user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var userDto = new UserDto(user.getEmail(), user.getUsername());
+        return ResponseEntity.ok(userDto);
     }
 
 //    @PostMapping("/users")

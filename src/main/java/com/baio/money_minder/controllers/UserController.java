@@ -3,9 +3,8 @@ package com.baio.money_minder.controllers;
 import com.baio.money_minder.dtos.UserDto;
 import com.baio.money_minder.entities.User;
 import com.baio.money_minder.repositories.UserRepository;
-import lombok.AllArgsConstructor;
+import com.baio.money_minder.mappers.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,10 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UserController {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
 
         this.userRepository.save(new User("andres435b@gmail.com", "BAIO", "Cocona"));
         this.userRepository.save(new User("marco@gmail.com", "Maga", "putos"));
@@ -28,7 +29,7 @@ public class UserController {
     public Iterable<UserDto> getAllUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(user -> new UserDto(user.getEmail(), user.getUsername()))
+                .map(this.userMapper::toDto)
                 .toList();
     }
 
@@ -39,8 +40,7 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
 
-        var userDto = new UserDto(user.getEmail(), user.getUsername());
-        return ResponseEntity.ok(userDto);
+        return ResponseEntity.ok(this.userMapper.toDto(user));
     }
 
 //    @PostMapping("/users")

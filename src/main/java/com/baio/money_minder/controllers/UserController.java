@@ -1,5 +1,6 @@
 package com.baio.money_minder.controllers;
 
+import com.baio.money_minder.dtos.RegisterUserRequest;
 import com.baio.money_minder.dtos.UserDto;
 import com.baio.money_minder.entities.User;
 import com.baio.money_minder.repositories.UserRepository;
@@ -7,6 +8,7 @@ import com.baio.money_minder.mappers.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/users")
@@ -35,7 +37,7 @@ public class UserController {
 
     @GetMapping("/{email}")
     public ResponseEntity<UserDto> getUser(@PathVariable String email) {
-        var user = this.userRepository.findById(email).orElse(null);
+        var user = this.userRepository.findByEmail(email).orElse(null);
         if(user == null) {
             return ResponseEntity.notFound().build();
         }
@@ -43,8 +45,27 @@ public class UserController {
         return ResponseEntity.ok(this.userMapper.toDto(user));
     }
 
-//    @PostMapping("/users")
-//    public User createUser() {
-//
-//    }
+    @PostMapping
+    public ResponseEntity<UserDto> createUser(
+            @RequestBody RegisterUserRequest request,
+            UriComponentsBuilder uriBuilder) {
+        if(this.userRepository.findByEmail(request.getEmail()).orElse(null) != null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        var newUser = this.userMapper.toEntity(request);
+        this.userRepository.save(newUser);
+
+        var userDto = this.userMapper.toDto(newUser);
+        var userUri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
+
+        return ResponseEntity.created(userUri).body(userDto);
+    }
+
+//    @DeleteMapping
+////    public
 }
+
+/**
+ * TODO (User) Update  y Delete
+ */

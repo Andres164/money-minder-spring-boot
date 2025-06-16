@@ -2,19 +2,30 @@ package com.baio.money_minder.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@Data
 @Table(name = "users")
 public class User {
+    public User(String email, String username, String password) {
+        this.email  = email;
+        this.username  = username;
+        this.password  = password;
+    }
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
+
     @Column(
         name = "email",
-        length = 150
+        length = 150,
+        unique = true
     )
     private String email;
 

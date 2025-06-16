@@ -1,9 +1,6 @@
 package com.baio.money_minder.controllers;
 
-import com.baio.money_minder.dtos.ChangePasswordRequest;
-import com.baio.money_minder.dtos.RegisterUserRequest;
-import com.baio.money_minder.dtos.UpdateUserRequest;
-import com.baio.money_minder.dtos.UserDto;
+import com.baio.money_minder.dtos.*;
 import com.baio.money_minder.entities.User;
 import com.baio.money_minder.repositories.UserRepository;
 import com.baio.money_minder.mappers.UserMapper;
@@ -14,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/users")
 public class UserController {
     private final UserRepository userRepository;
@@ -25,9 +23,25 @@ public class UserController {
         this.userMapper = userMapper;
 
         this.userRepository.save(new User("andres435b@gmail.com", "BAIO", "Cocona"));
-        this.userRepository.save(new User("marco@gmail.com", "Maga", "putos"));
+        this.userRepository.save(new User("marco@gmail.com", "Maga", "rana"));
         this.userRepository.save(new User("emanuel@gmail.com", "Belcas", "Belcoso"));
         this.userRepository.save(new User("john@gmail.com", "JohnDoe", "123"));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserDto> login(@RequestBody LoginRequest request) {
+        var user = this.userRepository.findByEmail(request.getEmail()).orElse(null);
+        if(user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // We use the .equals method instead of a more straightforward != comparison because the .equals method
+        // has null validation
+        if(!user.getPassword().equals(request.getPassword())) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        return ResponseEntity.ok(userMapper.toDto(user));
     }
 
     @GetMapping

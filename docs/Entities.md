@@ -13,7 +13,7 @@ nuestra aplicacion se encargara de llevar el segimiento de estos gastos
 
 # Expenses
 - id
-- useId // Propietario del gasto
+- userId // Propietario del gasto
 - amount
 - currency
 - description

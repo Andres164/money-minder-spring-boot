@@ -126,7 +126,3 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 }
-
-/**
- * TODO (User) Update  y Delete
- */

@@ -14,7 +14,7 @@ public class CategoryController {
     private CategoryRepository categoryRepository;
     // GET
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategory(@PathVariable Long id) {
+    public ResponseEntity<Category> getCategory(@PathVariable(name = "id") Long id) {
         var category = this.categoryRepository.findById(id).orElse(null);
         if(category == null) {
             return ResponseEntity.notFound().build();
@@ -49,9 +49,31 @@ public class CategoryController {
     }
 
     // PUT
+    @PutMapping("/{id}")
+    public ResponseEntity<Category> updateCategory(
+        @PathVariable(name = "id") Long id,
+        @RequestBody Category request ) {
+        var category = this.categoryRepository.findById(id).orElse(null);
+        if(category == null) {
+            return ResponseEntity.notFound().build();
+        }
+        // TODO:  IMPROVE BY NOT HAVING THIS MAPPING LOGIC IN THE CONTROLLER
+        category.setName(request.getName());
+        this.categoryRepository.save(category);
 
-    // PATCH
+        return ResponseEntity.ok(category);
+    }
 
     // DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable(name = "id") Long id) {
+        var category = this.categoryRepository.findById(id).orElse(null);
+        if(category == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        this.categoryRepository.delete(category);
+        return ResponseEntity.noContent().build
+    }
 }
 

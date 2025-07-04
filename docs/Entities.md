@@ -14,14 +14,15 @@ nuestra aplicacion se encargara de llevar el segimiento de estos gastos
 # Expenses
 - id
 - userId // Propietario del gasto
+- categoryId
 - amount
 - currency
 - description
 - date
 
 # Categories
-id
-name
+- id
+- name
 
 # ExpenseTags
 - expenseId

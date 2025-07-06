@@ -51,10 +51,12 @@ nuestra aplicacion se encargara de llevar el segimiento de estos gastos
 
 # Notifications
 - id
-- usuerId
+- userId
 - content
-- date
+- notifyDate
+- hasBeenRead
 
+[//]: # (TODO: Add *hasBeenRead* property to ER diagram and date name change)
 
 # Ejemplos
 

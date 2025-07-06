@@ -73,7 +73,7 @@ public class CategoryController {
         }
 
         this.categoryRepository.delete(category);
-        return ResponseEntity.noContent().build
+        return ResponseEntity.noContent().build();
     }
 }
 

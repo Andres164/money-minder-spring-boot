@@ -1,17 +1,20 @@
-# Objetivo
+# Entidades
+
+## Objetivo
+
 Crear una aplicacion que te ayude a mejorar tus gastos.
 Esto se logra teniendo un conocimiento completo de los gastsos que haces
 nuestra aplicacion se encargara de llevar el segimiento de estos gastos
 
+## Users
 
-# Users
 - id
 - username
 - email
 - password
 
+## Expenses
 
-# Expenses
 - id
 - userId // Propietario del gasto
 - categoryId
@@ -20,25 +23,30 @@ nuestra aplicacion se encargara de llevar el segimiento de estos gastos
 - description
 - date
 
-# Categories
+## Categories
+
 - id
 - name
 
-# ExpenseTags
+## ExpenseTags
+
 - expenseId
 - tagId
 - id
 
-# Tags
+## Tags
+
 - id
 - name
 
-# BudgetCategories
+## BudgetCategories
+
 - budgetId
 - categoryId
 - id
 
-# Budgets
+## Budgets
+
 - id
 - userId // Propietario del presupuesto
 - name
@@ -49,16 +57,15 @@ nuestra aplicacion se encargara de llevar el segimiento de estos gastos
 - startDate
 - state
 
-# Notifications
+## Notifications
+
 - id
 - userId
 - content
 - notifyDate
 - hasBeenRead
 
-[//]: # (TODO: Add *hasBeenRead* property to ER diagram and date name change)
-
-# Ejemplos
+## Ejemplos
 
 Dia actual
 09 Junio
@@ -78,8 +85,8 @@ entretenimiento
 80
 historico
 
-
 Categorias
+
 - Despensas
 - Entretenimiento
 - Transporte
@@ -87,35 +94,36 @@ Categorias
 - Deportes
 
 Tags
--  Gasolina
+
+- Gasolina
 - Cine
 - Videojuegos
 - Gym
 - Ciclismo
 
-
-
-
 Expense
+
 - Compre un juego en steam
 - $100
 - Categoria: Entretenimiento
 - Tag: Videojuegos
 
 Budget #1
+
 - Presupuesto mensual para entretenimiento
 - Categorias Entretenimiento
 - $100
 - $0
 
 Budget #2
+
 - Presupuesto general mensual
 - Categorias: Todas
 - $1000
 - $0
 
-
 Expense
+
 - Compre Stellar Blade
 - $999
 - Categoria: Entretenimiento

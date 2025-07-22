@@ -75,3 +75,36 @@ you can also resolve dependencies manually if you need to inside of the main cla
         
     }
 ```
+  
+### Envoriemental variables
+
+You  can also inject envoriemental variables directly to classes with porperty files, you have a default one in `resources/application.properties`.
+
+> application.properties
+
+```json
+weatherApi.uri.base = 127.0.0.1:8080
+weatherApi.uri.forecast = /forecast
+weatherApi.rateLimit.int = 1200 // You can also provide variable type
+```
+
+> WeatherClient.java
+
+```java
+public class WeatherClient {
+    @Value("${weatherApi.uri.base}")
+    private String baseUri;
+
+    @Value("${weatherApi.uri.forecast}")
+    private String forecastUri;
+
+    @Value("${weatherApi.rateLimit.int}")
+    private Integer rateLimit;
+
+    public getForecast(Date forecastDate) {
+        ...
+    }
+}
+```
+
+### Spring profiles

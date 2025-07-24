@@ -183,3 +183,25 @@ When you manually provide bean instantiation in the application config files you
         }
     }
 ```
+
+> [!IMPORTANT]
+> When providing bean instantiation manually, be sure to have one for each profle, if theres no bean provider for one profile, when choosing that profile, then no bean resolution si going to be given to dependent classes, resulting in an exception.
+
+---
+
+## Rest Controllers
+
+### Path variables
+
+```java
+@GetMapping("/users")
+public ResponseEntity<User> getAll(
+    @RequestParam() String orderBy,
+    @RequestParam() String order
+) {
+    users = this.userRepository.getAll(orderBy, order);
+}
+```
+
+An example request for the previous endpoint would be
+`http://localhost:8080/users?orderBy=name&order=desc`

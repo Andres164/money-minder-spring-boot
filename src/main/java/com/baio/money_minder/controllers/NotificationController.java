@@ -2,9 +2,9 @@ package com.baio.money_minder.controllers;
 
 import com.baio.money_minder.dtos.*;
 import com.baio.money_minder.entities.Notification;
+import com.baio.money_minder.mappers.NotificationMapper;
 import com.baio.money_minder.repositories.NotificationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -17,7 +17,7 @@ public class NotificationController {
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
 
-    private String baseUri = "/notifications";
+    private static final String BASE_URI = "/notifications";
 
     @GetMapping
     public ResponseEntity<Iterable<Notification>> getAllNotifications() {
@@ -37,30 +37,30 @@ public class NotificationController {
 
     @PostMapping
     public ResponseEntity<Notification> createNotification(
-        @RequestBody NotificationRequest request,
+        @RequestBody NotificationRequest notification,
         UriComponentsBuilder uriBuilder
     ) {
         /* TODO: Add validation to prevent the creation of notifications with notify date in the past */
-        var newNotification = this.notificationMapper.toEntity(request);
+        var newNotification = this.notificationMapper.toEntity(notification);
         this.notificationRepository.save(newNotification);
 
-        var notificationUri = uriBuilder.path(this.baseUri + "/{id}").buildAndExpand(newNotification.getId()).toUri();
+        var notificationUri = uriBuilder.path(BASE_URI + "/{id}").buildAndExpand(newNotification.getId()).toUri();
         return ResponseEntity.created(notificationUri).body(newNotification);
     }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Notification> updateNotification(
-        @PathVariable(name = "id"),
-        @RequestBody NotificationRequest request
-    ) {
-        var notification = this.notificationRepository.findById(id).orElse(null);
-        if(notification == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        notificationMapper.update(request, notification);
-        notificationRepository.save(notification);
-
-        return ResponseEntity.ok(notification);
-    }
+//
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Notification> updateNotification(
+//        @PathVariable(name = "id") int id,
+//        @RequestBody NotificationRequest request
+//    ) {
+//        var notification = this.notificationRepository.findById(id).orElse(null);
+//        if(notification == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        notificationMapper.update(request, notification);
+//        notificationRepository.save(notification);
+//
+//        return ResponseEntity.ok(notification);
+//    }
 }

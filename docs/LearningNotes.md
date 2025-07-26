@@ -205,3 +205,31 @@ public ResponseEntity<User> getAll(
 
 An example request for the previous endpoint would be
 `http://localhost:8080/users?orderBy=name&order=desc`
+
+## Data JPA
+
+### Java JPA configurations for developement
+
+There are configurations you may want to set for java JPA Hibernate to have the same data in the database when you are developing your application, you can do this in the `application.yml` file.
+
+```yml
+spring:
+    # Database connection settings
+    datasource:
+        url: jdbc:driver://host:port/database_name
+        username: user
+        password: secret
+        driver-class-name: org.database.Driver
+    # Add the configurations for JPA behaviour
+    jpa:
+        hibernate:
+            # Sets what to on application startup
+            # create will create the schema and destroy the previous data
+            # good for developement where you always want to start with the same data
+            ddl-auto: create 
+        show-sql: true # Show every query JPA runs in the Console
+        properties: 
+            hibernate:
+                format_sql: true # Show formatted query in the console
+        database: database # e.g postgresql
+```

@@ -47,20 +47,34 @@ public class NotificationController {
         var notificationUri = uriBuilder.path(BASE_URI + "/{id}").buildAndExpand(newNotification.getId()).toUri();
         return ResponseEntity.created(notificationUri).body(newNotification);
     }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Notification> updateNotification(
-//        @PathVariable(name = "id") int id,
-//        @RequestBody NotificationRequest request
-//    ) {
-//        var notification = this.notificationRepository.findById(id).orElse(null);
-//        if(notification == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//
-//        notificationMapper.update(request, notification);
-//        notificationRepository.save(notification);
-//
-//        return ResponseEntity.ok(notification);
-//    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Notification> updateNotification(
+        @PathVariable(name = "id") int id,
+        @RequestBody NotificationRequest updatedNotification
+    ) {
+        var notification = this.notificationRepository.findById(id).orElse(null);
+        if(notification == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        notificationMapper.update(updatedNotification, notification);
+        notificationRepository.save(notification);
+
+        return ResponseEntity.ok(notification);
+    }
+
+    // DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteNotification(
+        @PathVariable(name = "id") int id
+    ) {
+        var notification = this.notificationRepository.findById(id).orElse(null);
+        if(notification == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        this.notificationRepository.delete(notification);
+        return ResponseEntity.noContent().build();
+    }
 }

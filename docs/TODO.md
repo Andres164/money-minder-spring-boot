@@ -26,3 +26,9 @@
 
 - Add endpoint to get user's notifications
 - getAllUsers is not returning a ResponseEntity
+
+## Global
+
+- Pass down all the mapping logic from the controllers 
+to a service layer.
+- 

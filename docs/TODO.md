@@ -32,3 +32,4 @@
 - Pass down all the mapping logic from the controllers 
 to a service layer.
 - Add documentation with Swagger
+- Change folder structure to Domain layered

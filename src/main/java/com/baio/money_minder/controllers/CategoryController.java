@@ -2,6 +2,7 @@ package com.baio.money_minder.controllers;
 
 import com.baio.money_minder.entities.Category;
 import com.baio.money_minder.repositories.CategoryRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/categories")
+@Tag(name = "Categories")
 @AllArgsConstructor
 public class CategoryController {
     private CategoryRepository categoryRepository;

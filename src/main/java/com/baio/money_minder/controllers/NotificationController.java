@@ -4,6 +4,7 @@ import com.baio.money_minder.dtos.*;
 import com.baio.money_minder.entities.Notification;
 import com.baio.money_minder.mappers.NotificationMapper;
 import com.baio.money_minder.repositories.NotificationRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,8 +18,9 @@ import java.util.HashMap;
 
 @RestController
 @CrossOrigin
-@AllArgsConstructor
 @RequestMapping("/notifications")
+@Tag(name = "Notifications")
+@AllArgsConstructor
 public class NotificationController {
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;

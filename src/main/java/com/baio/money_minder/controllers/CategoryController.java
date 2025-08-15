@@ -13,69 +13,80 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Tag(name = "Categories")
 @AllArgsConstructor
 public class CategoryController {
-    private CategoryRepository categoryRepository;
-    // GET
-    @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategory(@PathVariable(name = "id") Long id) {
-        var category = this.categoryRepository.findById(id).orElse(null);
-        if(category == null) {
-            return ResponseEntity.notFound().build();
-        }
 
-        return ResponseEntity.ok(category);
+    private final CategoryRepository categoryRepository;
+
+    @Operation(summary = "Get category by ID", responses = {
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "404", content = @Content)
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<Category> getCategory(@PathVariable Long id) {
+        return categoryRepository.findById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 
-    // getAll
+    @Operation(summary = "Get all categories", responses = {
+        @ApiResponse(responseCode = "200")
+    })
     @GetMapping
     public ResponseEntity<Iterable<Category>> getAllCategories() {
-        var categories = this.categoryRepository.findAll();
-
-        return ResponseEntity.ok(categories);
+        return ResponseEntity.ok(categoryRepository.findAll());
     }
 
-    // Create
+    @Operation(summary = "Create a new category", responses = {
+        @ApiResponse(responseCode = "201"),
+        @ApiResponse(responseCode = "400", content = @Content)
+    })
     @PostMapping
     public ResponseEntity<Category> createCategory(
         @RequestBody Category category,
-        UriComponentsBuilder uriBuilder ) {
-
-        boolean isCategoryDuplicate = this.categoryRepository.existsCategoryByName(category.getName());
-        if(isCategoryDuplicate) {
-            // TODO: Agregar un mensaje de error "Ya existe una categoria con este nombre" y posiblemente devolver el URI a este recurso
-            return ResponseEntity.badRequest().build();
+        UriComponentsBuilder uriBuilder
+    ) {
+        // TODO: Agregar un mensaje de error "Ya existe una categoria con este nombre" y posiblemente devolver el URI a este recurso
+        if (categoryRepository.existsCategoryByName(category.getName())) {
+            return ResponseEntity.badRequest().build(); // or 409 Conflict
         }
 
-        this.categoryRepository.save(category);
-        var categoryUri = uriBuilder.path("/categories/{id}").buildAndExpand(category.getId()).toUri();
-        return ResponseEntity.created(categoryUri).build();
+        categoryRepository.save(category);
+        var location = uriBuilder.path("/{id}").buildAndExpand(category.getId()).toUri();
+        return ResponseEntity.created(location).build();
     }
 
-    // PUT
+    @Operation(summary = "Update an existing category", responses = {
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "404", content = @Content)
+    })
     @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(
-        @PathVariable(name = "id") Long id,
-        @RequestBody Category request ) {
-        var category = this.categoryRepository.findById(id).orElse(null);
-        if(category == null) {
-            return ResponseEntity.notFound().build();
-        }
+        @PathVariable Long id,
+        @RequestBody Category request
+    ) {
+        return categoryRepository.findById(id)
         // TODO:  IMPROVE BY NOT HAVING THIS MAPPING LOGIC IN THE CONTROLLER
-        category.setName(request.getName());
-        this.categoryRepository.save(category);
-
-        return ResponseEntity.ok(category);
+            .map(existing -> {
+                existing.setName(request.getName());
+                categoryRepository.save(existing);
+                return ResponseEntity.ok(existing);
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 
-    // DELETE
+    @Operation(summary = "Delete category by ID", responses = {
+        @ApiResponse(responseCode = "204"),
+        @ApiResponse(responseCode = "404", content = @Content)
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable(name = "id") Long id) {
-        var category = this.categoryRepository.findById(id).orElse(null);
-        if(category == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        this.categoryRepository.delete(category);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+        return categoryRepository.findById(id)
+            .map(existing -> {
+                categoryRepository.delete(existing);
+                return ResponseEntity.noContent().build();
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 }
+
+
 

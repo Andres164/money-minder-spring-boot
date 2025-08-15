@@ -27,63 +27,71 @@ public class NotificationController {
 
     private static final String BASE_URI = "/notifications";
 
+    @Operation(summary = "Get all notifications", responses = {
+        @ApiResponse(responseCode = "200")
+    })
     @GetMapping
-    public ResponseEntity<Iterable<Notification>> getAllNotifications() {
+    public ResponseEntity<List<Notification>> getAllNotifications() {
         var notifications = this.notificationRepository.findAll();
         return ResponseEntity.ok(notifications);
     }
 
+    @Operation(summary = "Get notification by ID", responses = {
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "404", content = @Content)
+    })
     @GetMapping("/{id}")
     public ResponseEntity<Notification> getNotification(@PathVariable int id) {
-        var notification = this.notificationRepository.findById(id).orElse(null);
-        if(notification == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(notification);
+        return notificationRepository.findById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Create a new notification", responses = {
+        @ApiResponse(responseCode = "201"),
+    })
     @PostMapping
     public ResponseEntity<Notification> createNotification(
         @Valid @RequestBody NotificationRequest notification,
         UriComponentsBuilder uriBuilder
     ) {
-        /* TODO: Add validation to prevent the creation of notifications with notify date in the past */
         var newNotification = this.notificationMapper.toEntity(notification);
         this.notificationRepository.save(newNotification);
 
-        var notificationUri = uriBuilder.path(BASE_URI + "/{id}").buildAndExpand(newNotification.getId()).toUri();
-        return ResponseEntity.created(notificationUri).body(newNotification);
+        var location = uriBuilder.path("/{id}").buildAndExpand(newNotification.getId()).toUri();
+        return ResponseEntity.created(location).body(newNotification);
     }
 
+    @Operation(summary = "Update an existing notification", responses = {
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "404", content = @Content),
+    })
     @PutMapping("/{id}")
     public ResponseEntity<Notification> updateNotification(
-        @PathVariable(name = "id") int id,
-        @RequestBody NotificationRequest updatedNotification
+        @PathVariable int id,
+        @Valid @RequestBody NotificationRequest updatedNotification
     ) {
-        var notification = this.notificationRepository.findById(id).orElse(null);
-        if(notification == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        notificationMapper.update(updatedNotification, notification);
-        notificationRepository.save(notification);
-
-        return ResponseEntity.ok(notification);
+        return notificationRepository.findById(id)
+            .map(existing -> {
+                notificationMapper.update(updatedNotification, existing);
+                notificationRepository.save(existing);
+                return ResponseEntity.ok(existing);
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 
-    // DELETE
+    @Operation(summary = "Delete notification by ID", responses = {
+        @ApiResponse(responseCode = "204"),
+        @ApiResponse(responseCode = "404", content = @Content),
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNotification(
-        @PathVariable(name = "id") int id
-    ) {
-        var notification = this.notificationRepository.findById(id).orElse(null);
-        if(notification == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        this.notificationRepository.delete(notification);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteNotification(@PathVariable int id) {
+        return notificationRepository.findById(id)
+            .map(existing -> {
+                notificationRepository.delete(existing);
+                return ResponseEntity.noContent().build();
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -1,10 +1,12 @@
 package com.baio.money_minder.controllers;
 
 import com.baio.money_minder.dtos.*;
-import com.baio.money_minder.entities.User;
-import com.baio.money_minder.repositories.UserRepository;
-import com.baio.money_minder.mappers.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.baio.money_minder.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,116 +15,120 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 @CrossOrigin
 @RequestMapping("/users")
+@Tag(name = "Users")
+@AllArgsConstructor
 public class UserController {
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final UserService userService;
 
-    @Autowired
-    public UserController(UserRepository userRepository, UserMapper userMapper) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-
-        this.userRepository.save(new User("andres435b@gmail.com", "BAIO", "Cocona"));
-        this.userRepository.save(new User("marco@gmail.com", "Maga", "rana"));
-        this.userRepository.save(new User("emanuel@gmail.com", "Belcas", "Belcoso"));
-        this.userRepository.save(new User("john@gmail.com", "JohnDoe", "123"));
-    }
-
+    @Operation(
+            description = "Endpoint for verifying logging-in credentials for a user",
+            responses = {
+                    @ApiResponse( responseCode = "200"),
+                    @ApiResponse( responseCode = "401", content = @Content)
+            }
+    )
     @PostMapping("/login")
     public ResponseEntity<UserDto> login(@RequestBody LoginRequest request) {
-        var user = this.userRepository.findByEmail(request.getEmail()).orElse(null);
-        if(user == null) {
-            return ResponseEntity.notFound().build();
-        }
 
-        // We use the .equals method instead of a more straightforward != comparison because the .equals method
-        // has null validation
-        if(!user.getPassword().equals(request.getPassword())) {
+        if(!this.userService.validateCredentials(request.getEmail(), request.getPassword())) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        return ResponseEntity.ok(userMapper.toDto(user));
+        return ResponseEntity.ok(this.userService.findByEmail(request.getEmail()));
     }
 
+    @Operation( description = "Endpoint for getting all users")
     @GetMapping
     public Iterable<UserDto> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(this.userMapper::toDto)
-                .toList();
+        return userService.getAllUsers();
     }
 
+    @Operation(
+            description = "Endpoint for fetching a user by its email",
+            responses = {
+                    @ApiResponse( responseCode = "200"),
+                    @ApiResponse( responseCode = "204", content = @Content)
+            }
+    )
     @GetMapping("/{email}")
     public ResponseEntity<UserDto> getUser(@PathVariable String email) {
-        var user = this.userRepository.findByEmail(email).orElse(null);
-        if(user == null) {
-            return ResponseEntity.notFound().build();
-        }
+        var user = this.userService.findByEmail(email);
 
-        return ResponseEntity.ok(this.userMapper.toDto(user));
+        return user != null
+                ? ResponseEntity.ok(user)
+                : ResponseEntity.notFound().build();
     }
 
+    @Operation(
+            description = "Endpoint for creating a new user",
+            responses = {
+                    @ApiResponse( responseCode = "201"),
+                    @ApiResponse( responseCode = "400", content = @Content)
+            }
+    )
     @PostMapping
     public ResponseEntity<UserDto> createUser(
         @RequestBody RegisterUserRequest request,
-        UriComponentsBuilder uriBuilder) {
-        if(this.userRepository.findByEmail(request.getEmail()).orElse(null) != null) {
+        UriComponentsBuilder uriBuilder
+    ) {
+        if(this.userService.findByEmail(request.getEmail()) != null) {
             return ResponseEntity.badRequest().build();
         }
 
-        var newUser = this.userMapper.toEntity(request);
-        this.userRepository.save(newUser);
-
-        var userDto = this.userMapper.toDto(newUser);
+        var userDto = this.userService.createUser(request);
         var userUri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
-
         return ResponseEntity.created(userUri).body(userDto);
     }
 
+    @Operation(
+            description = "Endpoint for updating all fields of the user with the given email",
+            responses = {
+                    @ApiResponse( responseCode = "200"),
+                    @ApiResponse( responseCode = "404", content = @Content)
+            }
+    )
     @PutMapping("/{email}")
     public ResponseEntity<UserDto> updateUser(
         @PathVariable(name = "email") String email,
-        @RequestBody UpdateUserRequest request) {
-        var user = userRepository.findByEmail(email).orElse(null);
-        if(user == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        userMapper.update(request, user);
-        userRepository.save(user);
-
-        return ResponseEntity.ok(userMapper.toDto(user));
+        @RequestBody UpdateUserRequest request
+    ) {
+        var user = userService.updateUser(email, request);
+        return user != null
+                ? ResponseEntity.ok(user)
+                : ResponseEntity.notFound().build();
     }
 
+    @Operation(
+            description = "Endpoint for deleting the user with the given email",
+            responses = {
+                    @ApiResponse( responseCode = "204"),
+                    @ApiResponse( responseCode = "404", content = @Content)
+            }
+    )
     @DeleteMapping("/{email}")
     public ResponseEntity<Void> deleteUser(@PathVariable(name = "email") String email) {
-        var user = userRepository.findByEmail(email).orElse(null);
-        if(user == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        userRepository.delete(user);
-        return ResponseEntity.noContent().build();
+        var user = userService.deleteUser(email);
+        return user != null
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 
+    @Operation(
+            description = "Endpoint for changing the user password, the provided old password must match the current user's password ",
+            responses = {
+                    @ApiResponse( responseCode = "204"),
+                    @ApiResponse( responseCode = "401", content = @Content)
+            }
+    )
     @PostMapping("/{email}/change-password")
     public ResponseEntity<Void> changePassword(
         @PathVariable(name = "email") String email,
-        @RequestBody ChangePasswordRequest request) {
-        var user = userRepository.findByEmail(email).orElse(null);
-        if(user == null) {
-            return ResponseEntity.notFound().build();
-        }
+        @RequestBody ChangePasswordRequest request
+    ) {
+        boolean changedPassword = this.userService.changePassword(email, request) != null;
 
-        // We use the .equals method instead of a more straightforward != comparison because the .equals method
-        // has null validation
-        if(!user.getPassword().equals(request.getOldPassword())) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
-        user.setPassword(request.getNewPassword());
-        userRepository.save(user);
-
-        return ResponseEntity.noContent().build();
+        return changedPassword
+                ? ResponseEntity.noContent().build()
+                : new ResponseEntity<Void>(HttpStatus.UNAUTHORIZED);
     }
 }

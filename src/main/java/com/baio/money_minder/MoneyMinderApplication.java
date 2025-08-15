@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class MoneyMinderApplication {
-	private static final Logger log = LoggerFactory.getLogger(MoneyMinderApplication.class);
+
 
 	public static void main(String[] args) {
-		ApplicationContext context = SpringApplication.run(MoneyMinderApplication.class, args);
+		SpringApplication.run(MoneyMinderApplication.class, args);
 	}
 
 

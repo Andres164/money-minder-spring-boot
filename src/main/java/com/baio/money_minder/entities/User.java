@@ -1,11 +1,13 @@
 package com.baio.money_minder.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -48,5 +50,6 @@ public class User {
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
-    private Set<Notification> notifications;
+    @JsonManagedReference
+    private List<Notification> notifications;
 }

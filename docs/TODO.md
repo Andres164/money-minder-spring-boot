@@ -15,12 +15,13 @@
 
 ## Global
 
-- Pass down all the mapping logic from the controllers 
+- [WIP] Pass down all the mapping logic from the controllers 
 to a service layer.
   - NotificationController
   - CategoryController
+- [WIP] Configure JPA to print queries to console
+- Add rate limiting
 - Change folder structure to Domain layered
-- Configure JPA to print queries to console
 
 ### Improve OpenAPI Docs
 - Add descriptions for endpoint parameters

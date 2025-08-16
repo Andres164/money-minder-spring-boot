@@ -20,6 +20,6 @@ public class NotificationRequest {
     private Date notifyDate;
     @NotNull
     private boolean hasBeenRead;
-    @Positive
+    @Positive(message = "Debe ser mayor a 0")
     private Integer userId;
 }

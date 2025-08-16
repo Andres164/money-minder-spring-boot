@@ -2,8 +2,7 @@ package com.baio.money_minder.controllers;
 
 import com.baio.money_minder.dtos.*;
 import com.baio.money_minder.entities.Notification;
-import com.baio.money_minder.mappers.NotificationMapper;
-import com.baio.money_minder.repositories.NotificationRepository;
+import com.baio.money_minder.services.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,77 +25,66 @@ import java.util.List;
 @Tag(name = "Notifications", description = "Access to users' notifications")
 @AllArgsConstructor
 public class NotificationController {
-    private final NotificationRepository notificationRepository;
-    private final NotificationMapper notificationMapper;
 
-    private static final String BASE_URI = "/notifications";
+    private final NotificationService notificationService;
 
     @Operation(summary = "Get all notifications", responses = {
-        @ApiResponse(responseCode = "200")
+            @ApiResponse(responseCode = "200")
     })
     @GetMapping
     public ResponseEntity<List<Notification>> getAllNotifications() {
-        var notifications = this.notificationRepository.findAll();
+        var notifications = notificationService.findAll();
         return ResponseEntity.ok(notifications);
     }
 
     @Operation(summary = "Get notification by ID", responses = {
-        @ApiResponse(responseCode = "200"),
-        @ApiResponse(responseCode = "404", content = @Content)
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404", content = @Content)
     })
     @GetMapping("/{id}")
     public ResponseEntity<Notification> getNotification(@PathVariable int id) {
-        return notificationRepository.findById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+        return notificationService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Create a new notification", responses = {
-        @ApiResponse(responseCode = "201", content = @Content),
-        @ApiResponse(responseCode = "400", content = @Content)
+            @ApiResponse(responseCode = "201", content = @Content),
+            @ApiResponse(responseCode = "400", content = @Content)
     })
     @PostMapping
     public ResponseEntity<Notification> createNotification(
-        @Valid @RequestBody NotificationRequest notification,
-        UriComponentsBuilder uriBuilder
+            @Valid @RequestBody NotificationRequest notification,
+            UriComponentsBuilder uriBuilder
     ) {
-        var newNotification = this.notificationMapper.toEntity(notification);
-        this.notificationRepository.save(newNotification);
-
+        var newNotification = notificationService.createUser(notification);
         var location = uriBuilder.path("/{id}").buildAndExpand(newNotification.getId()).toUri();
         return ResponseEntity.created(location).body(newNotification);
     }
 
     @Operation(summary = "Update an existing notification", responses = {
-        @ApiResponse(responseCode = "200"),
-        @ApiResponse(responseCode = "404", content = @Content),
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404", content = @Content),
     })
     @PutMapping("/{id}")
     public ResponseEntity<Notification> updateNotification(
-        @PathVariable int id,
-        @Valid @RequestBody NotificationRequest updatedNotification
+            @PathVariable int id,
+            @Valid @RequestBody NotificationRequest updatedNotification
     ) {
-        return notificationRepository.findById(id)
-            .map(existing -> {
-                notificationMapper.update(updatedNotification, existing);
-                notificationRepository.save(existing);
-                return ResponseEntity.ok(existing);
-            })
-            .orElse(ResponseEntity.notFound().build());
+        return notificationService.updateNotification(id, updatedNotification)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Delete notification by ID", responses = {
-        @ApiResponse(responseCode = "204"),
-        @ApiResponse(responseCode = "404", content = @Content),
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "404", content = @Content),
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNotification(@PathVariable int id) {
-        return notificationRepository.findById(id)
-            .<ResponseEntity<Void>>map(existing -> {
-                notificationRepository.delete(existing);
-                return ResponseEntity.noContent().build();
-            })
-            .orElse(ResponseEntity.notFound().build());
+        return notificationService.deleteNotification(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

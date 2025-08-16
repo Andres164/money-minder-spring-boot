@@ -2,6 +2,9 @@ package com.baio.money_minder.controllers;
 
 import com.baio.money_minder.entities.Category;
 import com.baio.money_minder.repositories.CategoryRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/categories")
-@Tag(name = "Categories")
+@Tag(name = "Categories", description = "Access the expenses' categories catalog")
 @AllArgsConstructor
 public class CategoryController {
 
@@ -80,7 +83,7 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         return categoryRepository.findById(id)
-            .map(existing -> {
+            .<ResponseEntity<Void>>map(existing -> {
                 categoryRepository.delete(existing);
                 return ResponseEntity.noContent().build();
             })

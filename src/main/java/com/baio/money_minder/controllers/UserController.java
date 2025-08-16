@@ -15,7 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 @CrossOrigin
 @RequestMapping("/users")
-@Tag(name = "Users")
+@Tag(name = "Users", description = "Access users")
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;

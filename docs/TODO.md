@@ -2,22 +2,8 @@
 
 ## Notifications
 
-- ~~Entity~~
-- ~~Repository~~
 - Controller
-  - ~~Get~~
-  - ~~Get All~~
-  - ~~Create~~
-  - Put
-  - ~~Delete~~
   - Patch
-- Dtos
-  - ~~NotificationRequest~~
-  - UpdateRequest
-- Mapper
-  - ~~Request to Entity~~
-  - update notification using update request
-- Test CRUD
 - FIX
   - Update should not accept userId changing
   - You can assign a non-existent userId to a notification
@@ -31,5 +17,17 @@
 
 - Pass down all the mapping logic from the controllers 
 to a service layer.
-- Add documentation with Swagger
+  - NotificationController
+  - CategoryController
 - Change folder structure to Domain layered
+- Configure JPA to print queries to console
+
+### Improve OpenAPI Docs
+- Add descriptions for endpoint parameters
+  - Notifications
+  - Users
+  - Categories
+- Add descriptions for endpoint responses
+  - Notifications
+  - Users
+  - Categories

@@ -1,7 +1,9 @@
 package com.baio.money_minder.services;
 
+import com.baio.money_minder.dtos.CategoryRequest;
 import com.baio.money_minder.entities.Category;
 import com.baio.money_minder.exceptions.UniqueFieldViolationException;
+import com.baio.money_minder.mappers.CategoryMapper;
 import com.baio.money_minder.repositories.CategoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
     public List<Category> findAll() {
         return categoryRepository.findAll();
@@ -22,18 +25,20 @@ public class CategoryService {
         return categoryRepository.findById(id);
     }
 
-    public Category createCategory(Category category) {
-        if (categoryRepository.existsCategoryByName(category.getName())) {
+    public Category createCategory(CategoryRequest categoryRequest) {
+        if (categoryRepository.existsCategoryByName(categoryRequest.getName())) {
             throw new UniqueFieldViolationException("name", "Una categoria con este nombre ya existe");
         }
-        return categoryRepository.save(category);
 
+        var category = this.categoryMapper.toEntity(categoryRequest);
+        return categoryRepository.save(category);
     }
 
-    public Optional<Category> updateCategory(Long id, Category updatedCategory) {
-        return categoryRepository.findById(id).map(category -> {
-            category.setName(updatedCategory.getName());
-            return categoryRepository.save(category);
+    public Optional<Category> updateCategory(Long id, CategoryRequest updatedCategory) {
+        return categoryRepository.findById(id)
+                .map(category -> {
+                    this.categoryMapper.update(updatedCategory, category);
+                    return categoryRepository.save(category);
         });
     }
 

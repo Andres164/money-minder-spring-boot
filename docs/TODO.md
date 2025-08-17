@@ -1,8 +1,8 @@
 # TODO list of things to do next
 
 ## Categories
-- Create CategoryRequest for creating a new category
-- Add field validations on create and update
+- ~~Create CategoryRequest for creating a new category~~
+- ~~Add field validations on create and update~~
 
 ## Notifications
 
@@ -19,11 +19,7 @@
 
 ## Global
 
-- [WIP] Pass down all the mapping logic from the controllers 
-to a service layer.
-  - NotificationController
-  - CategoryController
-- Add rate limiting
+- **Add rate limiting**
 - Configure JPA to print queries to console
 - Change folder structure to Domain layered
 

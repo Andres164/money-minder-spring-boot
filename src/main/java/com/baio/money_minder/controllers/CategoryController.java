@@ -1,11 +1,13 @@
 package com.baio.money_minder.controllers;
 
+import com.baio.money_minder.dtos.CategoryRequest;
 import com.baio.money_minder.entities.Category;
 import com.baio.money_minder.services.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,10 +48,10 @@ public class CategoryController {
     })
     @PostMapping
     public ResponseEntity<Category> createCategory(
-            @RequestBody Category category,
+            @Valid @RequestBody CategoryRequest categoryRequest,
             UriComponentsBuilder uriBuilder
     ) {
-        var savedCategory = categoryService.createCategory(category);
+        var savedCategory = categoryService.createCategory(categoryRequest);
 
         var location = uriBuilder.path("/{id}")
                 .buildAndExpand(savedCategory.getId()).toUri();
@@ -63,7 +65,7 @@ public class CategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(
             @PathVariable Long id,
-            @RequestBody Category request
+            @Valid @RequestBody CategoryRequest request
     ) {
         return categoryService.updateCategory(id, request)
                 .map(ResponseEntity::ok)

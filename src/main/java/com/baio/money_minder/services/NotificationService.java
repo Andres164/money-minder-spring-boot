@@ -30,6 +30,7 @@ public class NotificationService {
         return newNotification;
     }
 
+    // TODO: Check if .map is needed, could the readability be improved ?
     public Optional<Notification> updateNotification(int id, NotificationRequest updatedNotification) {
         return notificationRepository.findById(id)
                 .map(notification -> {
@@ -38,13 +39,14 @@ public class NotificationService {
                     return notification;
                 });
     }
-    // TODO: Check if .map is needed, could the readability be improved ?
+
     public boolean deleteNotification(int id) {
-        return notificationRepository.findById(id)
-                .map(existing -> {
-                    notificationRepository.delete(existing);
-                    return true;
-                })
-                .orElse(false);
+        var notification = notificationRepository.findById(id).orElse(null);
+        if(notification == null) {
+            return false;
+        }
+
+        notificationRepository.delete(notification);
+        return true;
     }
 }

@@ -1,5 +1,9 @@
 # TODO list of things to do next
 
+## Categories
+- Create CategoryRequest for creating a new category
+- Add field validations on create and update
+
 ## Notifications
 
 - Controller
@@ -19,8 +23,8 @@
 to a service layer.
   - NotificationController
   - CategoryController
-- [WIP] Configure JPA to print queries to console
 - Add rate limiting
+- Configure JPA to print queries to console
 - Change folder structure to Domain layered
 
 ### Improve OpenAPI Docs

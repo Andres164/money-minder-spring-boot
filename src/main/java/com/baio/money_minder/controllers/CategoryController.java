@@ -1,7 +1,7 @@
 package com.baio.money_minder.controllers;
 
 import com.baio.money_minder.entities.Category;
-import com.baio.money_minder.repositories.CategoryRepository;
+import com.baio.money_minder.services.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,85 +11,73 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/categories")
 @Tag(name = "Categories", description = "Access the expenses' categories catalog")
 @AllArgsConstructor
 public class CategoryController {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     @Operation(summary = "Get category by ID", responses = {
-        @ApiResponse(responseCode = "200"),
-        @ApiResponse(responseCode = "404", content = @Content)
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404", content = @Content)
     })
     @GetMapping("/{id}")
     public ResponseEntity<Category> getCategory(@PathVariable Long id) {
-        return categoryRepository.findById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+        return categoryService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Get all categories", responses = {
-        @ApiResponse(responseCode = "200")
+            @ApiResponse(responseCode = "200")
     })
     @GetMapping
-    public ResponseEntity<Iterable<Category>> getAllCategories() {
-        return ResponseEntity.ok(categoryRepository.findAll());
+    public ResponseEntity<List<Category>> getAllCategories() {
+        return ResponseEntity.ok(categoryService.findAll());
     }
 
     @Operation(summary = "Create a new category", responses = {
-        @ApiResponse(responseCode = "201"),
-        @ApiResponse(responseCode = "400", content = @Content)
+            @ApiResponse(responseCode = "201"),
+            @ApiResponse(responseCode = "409", content = @Content)
     })
     @PostMapping
     public ResponseEntity<Category> createCategory(
-        @RequestBody Category category,
-        UriComponentsBuilder uriBuilder
+            @RequestBody Category category,
+            UriComponentsBuilder uriBuilder
     ) {
-        // TODO: Agregar un mensaje de error "Ya existe una categoria con este nombre" y posiblemente devolver el URI a este recurso
-        if (categoryRepository.existsCategoryByName(category.getName())) {
-            return ResponseEntity.badRequest().build(); // or 409 Conflict
-        }
+        var savedCategory = categoryService.createCategory(category);
 
-        categoryRepository.save(category);
-        var location = uriBuilder.path("/{id}").buildAndExpand(category.getId()).toUri();
-        return ResponseEntity.created(location).build();
+        var location = uriBuilder.path("/{id}")
+                .buildAndExpand(savedCategory.getId()).toUri();
+        return ResponseEntity.created(location).body(savedCategory);
     }
 
     @Operation(summary = "Update an existing category", responses = {
-        @ApiResponse(responseCode = "200"),
-        @ApiResponse(responseCode = "404", content = @Content)
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404", content = @Content)
     })
     @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(
-        @PathVariable Long id,
-        @RequestBody Category request
+            @PathVariable Long id,
+            @RequestBody Category request
     ) {
-        return categoryRepository.findById(id)
-        // TODO:  IMPROVE BY NOT HAVING THIS MAPPING LOGIC IN THE CONTROLLER
-            .map(existing -> {
-                existing.setName(request.getName());
-                categoryRepository.save(existing);
-                return ResponseEntity.ok(existing);
-            })
-            .orElse(ResponseEntity.notFound().build());
+        return categoryService.updateCategory(id, request)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Delete category by ID", responses = {
-        @ApiResponse(responseCode = "204"),
-        @ApiResponse(responseCode = "404", content = @Content)
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "404", content = @Content)
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        return categoryRepository.findById(id)
-            .<ResponseEntity<Void>>map(existing -> {
-                categoryRepository.delete(existing);
-                return ResponseEntity.noContent().build();
-            })
-            .orElse(ResponseEntity.notFound().build());
+        return categoryService.deleteCategory(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 }
-
-
-

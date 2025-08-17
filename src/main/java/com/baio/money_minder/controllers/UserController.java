@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class UserController {
             }
     )
     @PostMapping("/login")
-    public ResponseEntity<UserDto> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<UserDto> login(@Valid @RequestBody LoginRequest request) {
 
         if(!this.userService.validateCredentials(request.getEmail(), request.getPassword())) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -68,7 +69,7 @@ public class UserController {
     )
     @PostMapping
     public ResponseEntity<UserDto> createUser(
-        @RequestBody RegisterUserRequest request,
+        @Valid @RequestBody RegisterUserRequest request,
         UriComponentsBuilder uriBuilder
     ) {
         if(this.userService.findByEmail(request.getEmail()) != null) {
@@ -90,7 +91,7 @@ public class UserController {
     @PutMapping("/{email}")
     public ResponseEntity<UserDto> updateUser(
         @PathVariable(name = "email") String email,
-        @RequestBody UpdateUserRequest request
+        @Valid @RequestBody UpdateUserRequest request
     ) {
         var user = userService.updateUser(email, request);
         return user != null
@@ -123,7 +124,7 @@ public class UserController {
     @PostMapping("/{email}/change-password")
     public ResponseEntity<Void> changePassword(
         @PathVariable(name = "email") String email,
-        @RequestBody ChangePasswordRequest request
+        @Valid @RequestBody ChangePasswordRequest request
     ) {
         boolean changedPassword = this.userService.changePassword(email, request) != null;
 

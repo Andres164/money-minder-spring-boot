@@ -7,8 +7,8 @@ import org.hibernate.validator.constraints.Length;
 
 @Data
 public class ChangePasswordRequest {
-    @Size(min = 8)
+    @NotEmpty
     private String oldPassword;
-    @Size(min = 8)
+    @Size(min = 8, message = "La contraseña debe contener al menos 8 caracteres")
     private String newPassword;
 }

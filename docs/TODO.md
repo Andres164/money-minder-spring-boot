@@ -1,8 +1,12 @@
 # TODO list of things to do next
 
-## Categories
-- ~~Create CategoryRequest for creating a new category~~
-- ~~Add field validations on create and update~~
+## Expenses
+- ~~Model~~
+- ~~Repository~~
+- ~~Dto~~
+- ~~Mapper~~
+- ~~Service~~
+- ~~Controller~~
 
 ## Notifications
 
@@ -22,6 +26,10 @@
 - **Add rate limiting**
 - Configure JPA to print queries to console
 - Change folder structure to Domain layered
+
+### Validate that Services of entities that have reletions to other entities validate that the referenced entity exists
+- Notifications (Notification - User)
+- Expenses (Expense - User)
 
 ### Improve OpenAPI Docs
 - Add descriptions for endpoint parameters

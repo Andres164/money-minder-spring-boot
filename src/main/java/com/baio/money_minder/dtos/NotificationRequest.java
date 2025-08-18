@@ -21,5 +21,5 @@ public class NotificationRequest {
     @NotNull
     private boolean hasBeenRead;
     @Positive(message = "Debe ser mayor a 0")
-    private Integer userId;
+    private Long userId;
 }

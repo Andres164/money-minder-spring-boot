@@ -31,7 +31,6 @@ public class Notification {
 
     @Column(
         name = "content",
-        length = 255,
         nullable = false
     )
     private String content;

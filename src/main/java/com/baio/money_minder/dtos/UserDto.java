@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 public class UserDto {
-    private int id;
+    private Long id;
     private String email;
     private String username;
 

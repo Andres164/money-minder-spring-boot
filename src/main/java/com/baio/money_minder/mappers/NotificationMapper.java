@@ -10,5 +10,5 @@ import org.mapstruct.MappingTarget;
 public interface NotificationMapper {
     Notification toEntity(NotificationRequest notificationRequest);
 
-    Notification update(NotificationRequest updatedNotification, @MappingTarget Notification notification);
+    void update(NotificationRequest updatedNotification, @MappingTarget Notification notification);
 }

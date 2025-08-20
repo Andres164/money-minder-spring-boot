@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class ExpenseResponse {
     private Long id;
     private Long userId;
-    private Long categoryId;
+    private CategoryResponse category;
     private BigDecimal amount;
     private String currency;
     private String description;

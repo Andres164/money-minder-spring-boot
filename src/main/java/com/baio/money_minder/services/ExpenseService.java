@@ -40,7 +40,7 @@ public class ExpenseService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         var category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
-
+// TODO: Mapping logic should go in mapper
         expense.setUser(user);
         expense.setCategory(category);
 
@@ -52,10 +52,10 @@ public class ExpenseService {
                 .map(expense ->  {
                     var user = expense.getUser();
                     var category = categoryRepository.findById(expenseRequest.getCategoryId())
-                            .orElseThrow(() -> new RuntimeException("Category not found"));
+                            .orElseThrow(() -> new IllegalArgumentException("Category not found")); // TODO: catch exception in controller and return Bad Request
 
                     this.expenseMapper.update(expenseRequest, expense);
-
+                // TODO: This mapping logic should be in the mapper
                     expense.setUser(user);
                     expense.setCategory(category);
 

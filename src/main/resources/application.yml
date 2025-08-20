@@ -1,0 +1,6 @@
+spring:
+  jpa:
+    show-sql: true # Show every query JPA runs in the Console
+    properties:
+      hibernate:
+        format_sql: true # Show formatted query in the console

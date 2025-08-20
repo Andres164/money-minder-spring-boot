@@ -1,13 +1,5 @@
 # TODO list of things to do next
 
-## Expenses
-- ~~Model~~
-- ~~Repository~~
-- ~~Dto~~
-- ~~Mapper~~
-- ~~Service~~
-- ~~Controller~~
-
 ## Notifications
 
 - Controller

@@ -4,9 +4,6 @@
 
 - Controller
   - Patch
-- FIX
-  ~~- *You can assign a non-existent userId to a notification*~~
-  ~~- Update should not accept userId changing~~
 
 ### User
 
@@ -16,19 +13,19 @@
 ## Global
 
 - **Add rate limiting**
-~~- Configure JPA to print queries to console~~
 - Change folder structure to Domain layered
 
-### Validate that Services of entities that have reletions to other entities validate that the referenced entity exists
-~~- Notifications (Notification - User)~~
-~~- Expenses (Expense - User)~~
 
 ### Improve OpenAPI Docs
 - Add descriptions for endpoint parameters
-  - Notifications
+  ~~- Notifications~~
   - Users
-  - Categories
+  ~~- Categories~~
 - Add descriptions for endpoint responses
-  - Notifications
+  ~~- Notifications~~
   - Users
-  - Categories
+  ~~- Categories~~
+
+### Improve code consistency
+- use the same names for request body variable names e.g notificationRequest, updatedUser, etc.
+- Be consistent with type inference, dont use var then use explicit typing after if it's not necessary

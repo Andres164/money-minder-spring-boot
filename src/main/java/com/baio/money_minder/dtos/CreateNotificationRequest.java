@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotificationRequest {
+public class CreateNotificationRequest {
     @NotEmpty
     private String content;
     @Future(message = "La fecha de notificacion debe ser una fecha en el futuro")

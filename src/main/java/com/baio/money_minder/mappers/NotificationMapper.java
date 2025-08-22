@@ -1,14 +1,21 @@
 package com.baio.money_minder.mappers;
 
 
-import com.baio.money_minder.dtos.NotificationRequest;
+import com.baio.money_minder.dtos.CreateNotificationRequest;
+import com.baio.money_minder.dtos.NotificationResponse;
+import com.baio.money_minder.dtos.UpdateNotificationRequest;
 import com.baio.money_minder.entities.Notification;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface NotificationMapper {
-    Notification toEntity(NotificationRequest notificationRequest);
+    @Mapping(target = "user.id" , source = "userId")
+    Notification toEntity(CreateNotificationRequest createNotificationRequest);
 
-    void update(NotificationRequest updatedNotification, @MappingTarget Notification notification);
+    @Mapping(target = "userId" , source = "user.id")
+    NotificationResponse toDto(Notification notification);
+
+    void update(UpdateNotificationRequest updatedNotification, @MappingTarget Notification notification);
 }

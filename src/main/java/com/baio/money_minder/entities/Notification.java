@@ -12,10 +12,6 @@ import java.util.Date;
 @Table(name = "notifications")
 @NoArgsConstructor
 public class Notification {
-    public Notification(String content, Date notifyDate) {
-        this.content = content;
-        this.notifyDate = notifyDate;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

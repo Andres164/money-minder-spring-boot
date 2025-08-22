@@ -5,8 +5,8 @@
 - Controller
   - Patch
 - FIX
-  - Update should not accept userId changing
-  - You can assign a non-existent userId to a notification
+  ~~- *You can assign a non-existent userId to a notification*~~
+  ~~- Update should not accept userId changing~~
 
 ### User
 
@@ -16,12 +16,12 @@
 ## Global
 
 - **Add rate limiting**
-- Configure JPA to print queries to console
+~~- Configure JPA to print queries to console~~
 - Change folder structure to Domain layered
 
 ### Validate that Services of entities that have reletions to other entities validate that the referenced entity exists
-- Notifications (Notification - User)
-- Expenses (Expense - User)
+~~- Notifications (Notification - User)~~
+~~- Expenses (Expense - User)~~
 
 ### Improve OpenAPI Docs
 - Add descriptions for endpoint parameters

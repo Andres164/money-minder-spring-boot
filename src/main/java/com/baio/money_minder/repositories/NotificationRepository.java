@@ -8,4 +8,4 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public interface NotificationRepository extends JpaRepository<Notification, Integer> { }
+public interface NotificationRepository extends JpaRepository<Notification, Long> { }

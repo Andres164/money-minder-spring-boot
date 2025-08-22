@@ -33,6 +33,7 @@ public class ExpenseService {
                 .map(this.expenseMapper::toDto);
     }
 
+    // TODO: return Optional<ExpenseResponse>
     public ExpenseResponse createExpense(CreateExpenseRequest request) {
         var expense = expenseMapper.toEntity(request);
 

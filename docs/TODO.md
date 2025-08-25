@@ -16,16 +16,8 @@
 - Change folder structure to Domain layered
 
 
-### Improve OpenAPI Docs
-- Add descriptions for endpoint parameters
-  ~~- Notifications~~
-  - Users
-  ~~- Categories~~
-- Add descriptions for endpoint responses
-  ~~- Notifications~~
-  - Users
-  ~~- Categories~~
-
 ### Improve code consistency
 - use the same names for request body variable names e.g notificationRequest, updatedUser, etc.
 - Be consistent with type inference, dont use var then use explicit typing after if it's not necessary
+
+### Add 429 (Too many requests) to all endpoints  OpenAPI Docs

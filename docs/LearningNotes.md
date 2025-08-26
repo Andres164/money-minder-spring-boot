@@ -233,3 +233,18 @@ spring:
                 format_sql: true # Show formatted query in the console
         database: database # e.g postgresql
 ```
+
+## Rate limiting in GCP
+https://cloud.google.com/armor/docs/rate-limiting-overview
+
+
+- `rate_limit_threshold_count`: The number of requests per client allowed within a specified time interval. The minimum value is 1 and the maximum value is 1,000,000.
+    - `interval_sec`: The number of seconds in the time interval. The value must be 10, 30, 60, 120, 180, 240, 300, 600, 900, 1200, 1800, 2700, or 3600 seconds.
+- `exceed_action`: When a request exceeds the `rate_limit_threshold_count`, Cloud Armor applies the configured `exceed_action`. Possible values for the `exceed_action` are as follows:
+    - `deny(status)`: The request is denied and the specified error code is returned (valid values are 403, 404, 429 and 502). We recommend using the 429 (Too Many Requests) response code.
+    - `redirect`: The request is either redirected for reCAPTCHA assessment or to a different URL, based on the `exceed_redirect_options` parameter.
+- `exceed_redirect_options`: When the `exceed_action` is redirect, use this parameter to specify the redirect action:
+    - `type`: Type for the redirect action, either GOOGLE_RECAPTCHA or EXTERNAL_302.
+    - `target`: URL target for the redirect action. Only applicable when the type is EXTERNAL_302.
+- `conform_action`: This is the action performed when the number of requests is under the `rate_limit_threshold_count`. This is always an allow action.
+

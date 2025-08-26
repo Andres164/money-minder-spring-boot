@@ -5,10 +5,14 @@
 - Controller
   - Patch
 
-### User
+## User
 
 - Add endpoint to get user's notifications
 - getAllUsers is not returning a ResponseEntity
+
+## Rate Limiting
+- Consider adding a global rate limiting apart from the current
+  by ip rate limiting
 
 ## Global
 

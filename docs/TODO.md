@@ -1,13 +1,19 @@
 # TODO list of things to do next
 
-## Notifications
-
+## Budget
+- Model
+- Repository
+- DTOs
+  - BudgetResponse
+  - UpdateBudgetRequest
+  - CreateBudgetRequest
+- Service
+  - CRUD operations 
 - Controller
-  - Patch
+  - CRUD operations 
 
 ## User
 
-- Add endpoint to get user's notifications
 - getAllUsers is not returning a ResponseEntity
 
 ## Rate Limiting

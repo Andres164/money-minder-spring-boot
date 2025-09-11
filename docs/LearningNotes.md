@@ -24,7 +24,7 @@ public class UserRepository() {
 ```java
     
 public class UserService() {
-    // DEPENDANT ON UsersRepository
+    // DEPENDENT ON UsersRepository
     private UserRepository userRepo;
 
     // Constructor injection
@@ -177,7 +177,7 @@ When you manually provide bean instantiation in the application config files you
     public class ApplicationConfig {
 
         @Bean
-        @Profile("dev");
+        @Profile("dev")
         public UserRepository userRepository() {
             return new UserRepository("dev");
         }

@@ -1,7 +1,7 @@
 # TODO list of things to do next
 
 ## Budget
-- Model
+- ~~Model~~
 - Repository
 - DTOs
   - BudgetResponse
@@ -11,6 +11,7 @@
   - CRUD operations 
 - Controller
   - CRUD operations 
+- Add option to filter which categories are to be concidered on the budget
 
 ## User
 

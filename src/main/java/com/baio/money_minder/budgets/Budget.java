@@ -12,7 +12,7 @@ import java.util.Date;
 public class Budget {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false )
     @JoinColumn(name = "user_id", nullable = false)

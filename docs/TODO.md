@@ -2,11 +2,11 @@
 
 ## Budget
 - ~~Model~~
-- Repository
+- ~~Repository~~
 - DTOs
-  - BudgetResponse
-  - UpdateBudgetRequest
-  - CreateBudgetRequest
+  - ~~BudgetResponse~~
+  - ~~UpdateBudgetRequest~~
+  - ~~CreateBudgetRequest~~
 - Service
   - CRUD operations 
 - Controller

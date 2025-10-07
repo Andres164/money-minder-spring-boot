@@ -3,12 +3,20 @@ package com.baio.money_minder.budgets;
 import com.baio.money_minder.users.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.EnableMBeanExport;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "budgets")
 public class Budget {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,11 +14,15 @@ public class BudgetService {
     private final BudgetMapper budgetMapper;
 
     public List<BudgetResponse> findAll() {
-
+        return this.budgetRepository.findAll()
+                .stream()
+                .map(this.budgetMapper::toDto)
+                .toList();
     }
 
-    public Optional<BudgetResponse> findById() {
-
+    public Optional<BudgetResponse> findById(Long id) {
+        return this.budgetRepository.findById(id)
+                .map(this.budgetMapper::toDto);
     }
 
     public Optional<BudgetResponse> createBudget() {

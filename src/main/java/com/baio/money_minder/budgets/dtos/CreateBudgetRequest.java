@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateBudgetRequest {
-    private int userId;
+    private Long userId;
     private String name;
     private BigDecimal budgetAmount;
     private String currency;

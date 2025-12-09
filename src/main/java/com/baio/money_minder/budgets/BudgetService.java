@@ -2,6 +2,7 @@ package com.baio.money_minder.budgets;
 
 import com.baio.money_minder.budgets.dtos.BudgetResponse;
 import com.baio.money_minder.budgets.dtos.CreateBudgetRequest;
+import com.baio.money_minder.budgets.dtos.UpdateBudgetRequest;
 import com.baio.money_minder.users.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,8 +39,14 @@ public class BudgetService {
         return this.budgetMapper.toDto( budgetRepository.save(budget) );
     }
 
-    public Optional<BudgetResponse> updateBudget() {
+    public Optional<BudgetResponse> updateBudget(Long id, UpdateBudgetRequest request) {
+        return this.budgetRepository.findById(id)
+                .map(budget -> {
+                    this.budgetMapper.update(request, budget);
+                    this.budgetRepository.save(budget);
 
+                    return this.budgetMapper.toDto(budget);
+                });
     }
 
     public Boolean deleteBudget(Long id) {

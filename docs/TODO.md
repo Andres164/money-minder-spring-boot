@@ -12,7 +12,7 @@
   - CRUD operations 
 - Controller
   - CRUD operations 
-- Add option to filter which categories are to be concidered on the budget
+- Add option to filter which categories are to be considered on the budget
 
 ## User
 

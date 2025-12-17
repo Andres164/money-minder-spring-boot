@@ -1,5 +1,6 @@
 package com.baio.money_minder.users;
 
+import com.baio.money_minder.expenses.dtos.ExpenseResponse;
 import com.baio.money_minder.users.dtos.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -42,6 +45,20 @@ public class UserController {
     public Iterable<UserDto> getAllUsers() {
         return userService.getAllUsers();
     }
+
+    @Operation(
+            summary = "Retrieve all user expenses",
+            description = "Fetches a list of all registered expenses by a user.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully retrieved list of expenses"),
+                    @ApiResponse(responseCode = "404", description = "A user with the given email couldn't be found")
+            }
+    )
+    @GetMapping("/{email}/expenses")
+    public ResponseEntity<List<ExpenseResponse>> getUserExpenses(@PathVariable String email) {
+        return ResponseEntity.ok(userService.getUserExpenses(email));
+    }
+
 
     @Operation(
             description = "Endpoint for fetching a user by its email",

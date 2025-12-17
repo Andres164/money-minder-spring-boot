@@ -1,5 +1,7 @@
 package com.baio.money_minder.users;
 
+import com.baio.money_minder.expenses.ExpenseService;
+import com.baio.money_minder.expenses.dtos.ExpenseResponse;
 import com.baio.money_minder.users.dtos.ChangePasswordRequest;
 import com.baio.money_minder.users.dtos.RegisterUserRequest;
 import com.baio.money_minder.users.dtos.UpdateUserRequest;
@@ -7,16 +9,19 @@ import com.baio.money_minder.users.dtos.UserDto;
 import jakarta.validation.constraints.Email;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final ExpenseService expenseService;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, ExpenseService expenseService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.expenseService = expenseService;
 
         this.userRepository.save(new User("andres435b@gmail.com", "BAIO", "Cocona"));
         this.userRepository.save(new User("marco@gmail.com", "Maga", "rana"));
@@ -49,6 +54,10 @@ public class UserService {
                 .stream()
                 .map(this.userMapper::toDto)
                 .toList();
+    }
+
+    public List<ExpenseResponse> getUserExpenses(String email) {
+        return this.expenseService.findByUserEmail(email);
     }
 
     public UserDto createUser(RegisterUserRequest userRequest) {

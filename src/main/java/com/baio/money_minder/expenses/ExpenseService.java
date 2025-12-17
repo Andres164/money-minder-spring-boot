@@ -1,5 +1,6 @@
 package com.baio.money_minder.expenses;
 
+import com.baio.money_minder.exceptions.UserNotFoundException;
 import com.baio.money_minder.expenses.dtos.CreateExpenseRequest;
 import com.baio.money_minder.expenses.dtos.ExpenseResponse;
 import com.baio.money_minder.expenses.dtos.UpdateExpenseRequest;
@@ -21,6 +22,18 @@ public class ExpenseService {
 
     public List<ExpenseResponse> findAll() {
         return this.expenseRepository.findAll()
+                .stream()
+                .map(this.expenseMapper::toDto)
+                .toList();
+    }
+
+    public List<ExpenseResponse> findByUserEmail(String userEmail) {
+        boolean userExists = this.userRepository.existsByEmail(userEmail);
+        if(!userExists) {
+            throw new UserNotFoundException("El usuario con email " + userEmail + " no fue encontrado");
+        }
+
+        return this.expenseRepository.findByUserEmail(userEmail)
                 .stream()
                 .map(this.expenseMapper::toDto)
                 .toList();
